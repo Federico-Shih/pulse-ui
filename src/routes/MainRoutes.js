@@ -10,7 +10,7 @@ const Locations = Loadable(lazy(() => import('views/dashboard/Locations')));
 const Sectors = Loadable(lazy(() => import('views/dashboard/Sectors')));
 const Sector = Loadable(lazy(() => import('views/dashboard/Sectors/Sector')));
 const Sensor = Loadable(lazy(() => import('views/dashboard/Sectors/Sector/Sensor')));
-
+const Reports = Loadable(lazy(() => import('views/dashboard/Reports')));
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
 const UtilsColor = Loadable(lazy(() => import('views/utilities/Color')));
@@ -41,6 +41,10 @@ const MainRoutes = {
                 {
                     path: 'locations',
                     element: <Locations />
+                },
+                {
+                    path: 'reports',
+                    element: <Reports />
                 },
                 {
                     path: 'locations/:id',
