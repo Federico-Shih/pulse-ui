@@ -11,7 +11,7 @@ import ApexCharts from 'apexcharts';
 import Chart from 'react-apexcharts';
 
 // project imports
-import SkeletonTotalGrowthBarChart from 'ui-component/cards/Skeleton/TotalGrowthBarChart';
+import SkeletonTotalConsumptionBarChart from 'ui-component/cards/Skeleton/TotalConsumptionBarChart';
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 
@@ -33,9 +33,17 @@ const status = [
     }
 ];
 
+const MOCKED_CONSUMPTIONS = {
+    total: 570,
+    data: {
+        name: 'Investment',
+        data: [35, 125, 35, 35, 35, 80, 35, 20, 35, 45, 15, 75]
+    },
+}
+
 // ==============================|| DASHBOARD DEFAULT - TOTAL GROWTH BAR CHART ||============================== //
 
-const TotalGrowthBarChart = ({ isLoading }) => {
+const TotalConsumptionBarChart = ({ isLoading }) => {
     const [value, setValue] = useState('today');
     const theme = useTheme();
     const customization = useSelector((state) => state.customization);
@@ -54,7 +62,7 @@ const TotalGrowthBarChart = ({ isLoading }) => {
     useEffect(() => {
         const newChartData = {
             ...chartData.options,
-            colors: [primary200, primaryDark, secondaryMain, secondaryLight],
+            colors: [secondaryMain],
             xaxis: {
                 labels: {
                     style: {
@@ -91,7 +99,7 @@ const TotalGrowthBarChart = ({ isLoading }) => {
     return (
         <>
             {isLoading ? (
-                <SkeletonTotalGrowthBarChart />
+                <SkeletonTotalConsumptionBarChart />
             ) : (
                 <MainCard>
                     <Grid container spacing={gridSpacing}>
@@ -100,26 +108,12 @@ const TotalGrowthBarChart = ({ isLoading }) => {
                                 <Grid item>
                                     <Grid container direction="column" spacing={1}>
                                         <Grid item>
-                                            <Typography variant="subtitle2">Total Growth</Typography>
+                                            <Typography variant="subtitle2">Total Consumption</Typography>
                                         </Grid>
                                         <Grid item>
-                                            <Typography variant="h3">$2,324.00</Typography>
+                                            <Typography variant="h3">{MOCKED_CONSUMPTIONS.total} kWh</Typography>
                                         </Grid>
                                     </Grid>
-                                </Grid>
-                                <Grid item>
-                                    <TextField
-                                        id="standard-select-currency"
-                                        select
-                                        value={value}
-                                        onChange={(e) => setValue(e.target.value)}
-                                    >
-                                        {status.map((option) => (
-                                            <MenuItem key={option.value} value={option.value}>
-                                                {option.label}
-                                            </MenuItem>
-                                        ))}
-                                    </TextField>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -133,8 +127,8 @@ const TotalGrowthBarChart = ({ isLoading }) => {
     );
 };
 
-TotalGrowthBarChart.propTypes = {
+TotalConsumptionBarChart.propTypes = {
     isLoading: PropTypes.bool
 };
 
-export default TotalGrowthBarChart;
+export default TotalConsumptionBarChart;
