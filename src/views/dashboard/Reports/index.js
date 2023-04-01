@@ -1,34 +1,106 @@
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Stack, TableFooter } from "@mui/material";
-import { Container } from "@mui/system";
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Stack, TableFooter, Collapse, IconButton } from "@mui/material";
+import { Box, Container } from "@mui/system";
+import { useState } from "react";
+import { KeyboardArrowUp, KeyboardArrowDown } from "@mui/icons-material";
 
 const ServiceTypes = {
     WATER: "water",
-    ENERGY: "energy",
-    GAS: "gas",
+    ELECTRICITY: "energy",
+    NATURALGAS: "gas",
 };
 
 const ServiceMeasure = {
     [ServiceTypes.WATER]: 'lts',
-    [ServiceTypes.ENERGY]: 'kW/h',
-    [ServiceTypes.GAS]: 'm3'
+    [ServiceTypes.ELECTRICITY]: 'kW/h',
+    [ServiceTypes.NATURALGAS]: 'm3'
 };
 
 const breakdown = {
-    water: {
-        sector1: 100,
-        sector2: 200,
-        sector3: 500,
-        sector4: 200,
+    [ServiceTypes.WATER]: {
+        location1: {
+            sector1: 100,
+            sector2: 200,
+            sector3: 500,
+            sector4: 200,
+        },
+        location2: {
+            sector3: 500,
+            sector4: 200,
+        }
     },
-    gas: {
-        sector1: 200,
-        sector2: 3000,
-        sector4: 250,
+    [ServiceTypes.ELECTRICITY]: {
+        location1: {
+            sector1: 100,
+            sector2: 200,
+            sector3: 500,
+            sector4: 200,
+        },
+        location2: {
+            sector3: 500,
+            sector4: 200,
+        }
     },
-    energy: {
-        sector1: 210,
-        sector2: 600,
+    [ServiceTypes.NATURALGAS]: {
+        location1: {
+            sector1: 100,
+            sector2: 200,
+            sector3: 500,
+            sector4: 200,
+        },
+        location2: {
+            sector3: 500,
+            sector4: 200,
+        }
     }
+}
+
+const CollapsibleRow = ({ mainRow, breakdownRows }) => {
+    const [open, setOpen] = useState(false);
+    return (
+        <>
+        <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+        <TableCell>
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            onClick={() => setOpen(!open)}
+          >
+            {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+          </IconButton>
+        </TableCell>
+        <TableCell component="th" scope="row">
+          {mainRow.location}
+        </TableCell>
+        <TableCell>{mainRow.consumption}</TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box sx={{ margin: 1 }}>
+              <Table size="small" aria-label="purchases">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Sector</TableCell>
+                    <TableCell>Consumption</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {breakdownRows.map((breakdownRow, index) => (
+                    <TableRow key={index}>
+                      <TableCell component="th" scope="row">
+                        { breakdownRow.sector }
+                      </TableCell>
+                      <TableCell>{breakdownRow.consumption}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </>
+    );
 }
 
 const Reports = () => {
@@ -45,7 +117,10 @@ const Reports = () => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell>
-                                        Service
+
+                                    </TableCell>
+                                    <TableCell>
+                                        Location
                                     </TableCell>
                                     <TableCell>
                                         Consumption({ServiceMeasure[type]})
@@ -54,28 +129,25 @@ const Reports = () => {
                             </TableHead>
                             <TableBody>
                                 {
-                                    Object.entries(breakdownType).map(([sectorName, value]) => (
-                                        <TableRow>
-                                            <TableCell component={"th"}>
-                                                {sectorName}
-                                            </TableCell>
-                                            <TableCell>
-                                                {value}
-                                            </TableCell>
-                                        </TableRow>
+                                    Object.entries(breakdownType).map(([locationName, value]) => (
+                                        <CollapsibleRow
+                                            mainRow={{ location: locationName, consumption: Object.values(value).reduce((a, b) => a+b)}}
+                                            breakdownRows={Object.entries(value).map(([sector, value]) => ({ sector, consumption: value }))}
+                                        />
                                     ))
                                 }
                             </TableBody>
-                            <TableFooter>
+                            {/* <TableFooter>
                                 <TableRow>
+                                    <TableCell />
                                     <TableCell>
                                         total
                                     </TableCell>
                                     <TableCell>
-                                        {Object.values(breakdownType).reduce((prev, current) => prev + current)}
+                                        {Object.values(breakdownType).map(Object.values).map(Object.values).reduce((prev, current) => prev + current, 0)}
                                     </TableCell>
                                 </TableRow>
-                            </TableFooter>
+                            </TableFooter> */}
                         </Table>
                     </TableContainer>
                 </div>

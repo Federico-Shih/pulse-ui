@@ -6,6 +6,11 @@ export const Status = {
     FAILED: "failed",
 };
 
+export const PostStatus = {
+    ...Status,
+    PENDING: "pending"
+};
+
 const useSensor = create((set) => ({
     average: -1,
     type: "",

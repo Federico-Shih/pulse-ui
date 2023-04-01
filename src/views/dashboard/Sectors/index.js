@@ -1,23 +1,28 @@
 import { useParams } from "react-router-dom";
 import useSectors from "./useSectors";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import DescriptionForm from "./DescriptionForm";
 import { Status } from "./Sector/useSensor";
-import Sector from "./Sector";
 import CreateModal from "ui-component/models/CreateModal";
 import { IconButton, Stack } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import SectorCard from "./SectorCard";
+import { useLocations } from "../Locations/useLocations";
 
 const Sectors = () => {
     const params = useParams();
     const store = useSectors();
+    const { locations, fetch: fetchLocations } = useLocations();
+    const location = useMemo(() => locations.find((location) => (location.id === params.id)), [locations, params.id]);
+
     useEffect(() => {
-        if (params.id) {
+        if (params.id && location) {
             store.fetch(params.id);
+        } else {
+            fetchLocations();
         }
-    }, []);
-    console.log(store);
+    }, [fetchLocations, location, params.id]);
+
     if (!params.id) {
         return <div>HASNT ID</div>;
     }
@@ -28,7 +33,7 @@ const Sectors = () => {
                 store.status === Status.SUCCESS && (
                     <>
                         <Stack direction="row" spacing={5}>
-                            <DescriptionForm title={store.title} description={store.description} />
+                            <DescriptionForm title={location.name} description={location.description} />
                             <IconButton onClick={store.openModal} sx={{ width: 50 }}>
                                 <AddIcon/>
                             </IconButton>
@@ -36,14 +41,19 @@ const Sectors = () => {
                         <Stack direction="row" width={"100%"} flexWrap="wrap">
                             {
                                 store.sectorList.map((sector) => (
-                                    <SectorCard key={sector} sectorId={sector} />
+                                    <SectorCard key={sector.id} sector={sector} />
                                 ))
                             }
                         </Stack>
                     </>
                 )
             }
-            <CreateModal open={store.open} handleClose={store.closeModal} type="Sector" />
+            <CreateModal 
+                open={store.open} 
+                handleClose={store.closeModal} 
+                onSubmit={(locationDTO) => { store.create(params.id, locationDTO); store.closeModal(); }} 
+                type="Sector" 
+                />
         </>
     );
 }

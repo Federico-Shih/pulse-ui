@@ -10,8 +10,9 @@ import TotalOrderLineChartCard from './TotalOrderLineChartCard';
 import TotalIncomeDarkCard from './TotalIncomeDarkCard';
 import TotalIncomeLightCard from './TotalIncomeLightCard';
 import TotalConsumptionBarChart from './TotalConsumptionBarChart';
-import SectionsPieCard from './SectionsPieCard';
 import { gridSpacing } from 'store/constant';
+import SectorPieChartCard from './SectorPieChartCard';
+import { Stack } from '@mui/system';
 
 // ==============================|| DEFAULT DASHBOARD ||============================== //
 
@@ -44,15 +45,13 @@ const Dashboard = () => {
                 </Grid>
             </Grid>
             <Grid item xs={12}>
-                <Grid container spacing={gridSpacing}>
-                    <Grid item xs={12} md={8}>
-                        <TotalConsumptionBarChart isLoading={isLoading} />
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                        <RealTimeCard isLoading={isLoading} />
-                    </Grid>
-                </Grid>
+                <Stack direction="column">
+                    <TotalConsumptionBarChart isLoading={isLoading} />
+                    <RealTimeCard isLoading={isLoading} />
+                    <SectorPieChartCard sections={{ section1: 100, section2: 503, section5: 1235 }} />
+                </Stack>
             </Grid>
+
         </Grid>
     );
 };

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 // material-ui
-import { Grid, Typography, IconButton, Stack, Card, CardContent } from '@mui/material';
+import { Grid, Typography, IconButton, Stack, Card, CardContent, CircularProgress } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useTheme } from '@mui/material/styles';
 
@@ -10,6 +10,8 @@ import { gridSpacing } from 'store/constant';
 import CreateModal from 'ui-component/models/CreateModal.js';
 import { Container } from '@mui/system';
 import { useNavigate } from 'react-router';
+import { useLocations } from './useLocations';
+import { Status } from '../Sectors/Sector/useSensor';
 
 // ==============================|| DEFAULT DASHBOARD ||============================== //
 
@@ -63,15 +65,23 @@ function LocationCard({ title, description, id }) {
 }
 
 const Locations = () => {
-    const [isLoading, setLoading] = useState(true);
+    const { fetch, status, locations, create } = useLocations();
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
     useEffect(() => {
-        setLoading(false);
-    }, []);
+        fetch();
+    }, [fetch]);
+
+    if (status === Status.FAILED) {
+        return "Oops";
+    }
+
+    if (status === Status.LOADING) {
+        return <CircularProgress />;
+    }
 
     return (
         <Grid container spacing={gridSpacing}>
@@ -83,13 +93,21 @@ const Locations = () => {
                             <IconButton onClick={handleOpen}>
                                 <AddIcon/>
                             </IconButton>
-                            <CreateModal open={open} handleClose={handleClose} type="Locations" />
+                            <CreateModal 
+                                open={open} 
+                                handleClose={handleClose} 
+                                type="Locations" 
+                                onSubmit={async (locationDTO) => {
+                                    await create(locationDTO);
+                                    handleClose();
+                                }}
+                                />
                         </Stack>
                     </Grid>
                     <Container>
                         <Stack direction={"row"} flexWrap={"wrap"} sx={{ width: '100%' }} spacing={3} item container>
-                            {MOCKED_LOCATIONS.map((location) => (
-                                <LocationCard title={location.title} description={location.description} />
+                            {locations.map((location) => (
+                                <LocationCard key={location.id} id={location.id} title={location.name} description={location.description} />
                             ))}
                         </Stack>
                     </Container>

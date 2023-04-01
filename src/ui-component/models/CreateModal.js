@@ -15,13 +15,15 @@ const style = {
   };
   
 
-export default function CreateModal({ open, handleClose, type }) {
+export default function CreateModal({ open, handleClose, type, onSubmit }) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
+    const [loading, setLoading] = useState(false);
 
-
-    const handleSave = () => {
-        console.log(description);
+    const handleSave = async () => {
+        setLoading(true);
+        await onSubmit({ title, description });
+        setLoading(false);
     }
 
     return (
@@ -44,8 +46,8 @@ export default function CreateModal({ open, handleClose, type }) {
                     </Grid>
                     <Grid item container xs={12}>
                         <Stack direction="row" spacing={2}>
-                            <Button onClick={handleSave} variant="contained">Save</Button>
-                            <Button onClick={handleClose} variant="outlined">Cancel</Button>
+                            <Button onClick={handleSave} variant="contained" loading={loading}>Save</Button>
+                            <Button onClick={handleClose} variant="outlined" disabled={loading}>Cancel</Button>
                         </Stack>
                     </Grid>
                 </Grid>

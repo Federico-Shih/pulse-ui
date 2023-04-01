@@ -8,14 +8,22 @@ import { Stack, Typography } from '@mui/material';
 import CreateModal from 'ui-component/models/CreateModal';
 import AddIcon from '@mui/icons-material/Add';
 import { IconButton } from '@mui/material';
+import useSectors from '../useSectors';
 
 const Sector = () => {
     const params = useParams();
     const sectorId = params.sectorId;
-    const { status, sensorList, fetch, title, description, open, closeModal, openModal } = useSector();
+    const { sectorList, fetch: fetchSectors } = useSectors();
+    const sector = sectorList.find((current) => current.id === sectorId);
+    const { status, sensorList, fetch, open, closeModal, openModal, create } = useSector();
+    
     useEffect(() => {
-        fetch(sectorId);
-    }, []);
+        if (sector) {
+            fetch(sectorId);
+        } else {
+            fetchSectors(params.id);
+        }
+    }, [fetch, fetchSectors, params.id, sector, sectorId]);
 
     return (
         <>
@@ -24,24 +32,34 @@ const Sector = () => {
                     <Stack>
                         <Stack direction={"row"} alignItems={"center"}>
                             <Typography variant="h3">
-                                {title}
+                                {sector.name}
                             </Typography>
-                            <IconButton onClick={openModal} sx={{ width: 50 }}>
+                            <IconButton onClick={openModal} sx={{ width: 50, marginLeft: 3 }}>
                                 <AddIcon/>
                             </IconButton>
                         </Stack>
                         <Typography variant="subtitle2">
-                            {description}
+                            {sector.description}
                         </Typography>
-                        {
-                            sensorList.map((sensorId) => (
-                                <SensorCard key={sensorId} sensorId={sensorId} />
-                            ))
-                        }
+                        <Stack sx={{ width: '100%' }} direction="row" flexWrap={"wrap"} spacing={1}>
+                            {
+                                sensorList.map((sensor) => (
+                                    <SensorCard key={sensor.id} sensor={sensor} />
+                                ))
+                            }
+                        </Stack>
                     </Stack>
                 )
             }
-            <CreateModal open={open} handleClose={closeModal} type="Sensor" />
+            <CreateModal 
+                open={open} 
+                handleClose={closeModal} 
+                type="Sensor" 
+                onSubmit={(sensorDTO) => {
+                    create(sectorId, sensorDTO);
+                    closeModal();
+                    }}
+                />
         </>
     );
 };

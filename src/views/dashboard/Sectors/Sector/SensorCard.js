@@ -6,56 +6,32 @@ import CircularProgress from '@mui/material/CircularProgress';
 import useSensor, { Status } from "./useSensor";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
+import { CardActions, IconButton } from "@mui/material";
 
 
-const Sensor = ({ sensorId }) => {
+const SensorCard = ({ sensor }) => {
     const navigate = useNavigate();
-    const store = useSensor();
-    useEffect(() => {
-        store.fetch(sensorId);
-    }, []);
-
-    const ShowState = ({ status, children }) => {
-        switch (status) {
-            case Status.LOADING:
-                return (
-                    <CircularProgress />
-                )
-            case Status.FAILED:
-                return (
-                    "FALLE :("
-                );
-            default:
-                return children;
-        }
-    }
-    
     return (
         <Card variant="outlined" sx={{ width: "12em", cursor: "pointer" }} onClick={() => {
-            navigate(`sensors/${sensorId}`);
+            navigate(`sensors/${sensor.id}`);
         }}>
             <CardContent>
-                {
-                    <ShowState 
-                        status={store.status}
-                    >
-                        <Typography variant="h5" component="div">
-                            {store.title}
-                        </Typography>
-                        <Typography variant="subtitle2">
-                            {store.description}
-                        </Typography>
-                        <Typography>
-                            Id: {sensorId}
-                        </Typography>
-                    </ShowState>
-                }
+                <Typography variant="h5" component="div">
+                    {sensor.name}
+                </Typography>
+                <Typography variant="subtitle2">
+                    {sensor.description}
+                </Typography>
+                <Typography>
+                    Id: {sensor.id}
+                </Typography>
             </CardContent>
+
         </Card>
     );
 };
 
-Sensor.propTypes = {
+SensorCard.propTypes = {
     sensorId: PropTypes.string,
 };
-export default Sensor;
+export default SensorCard;
