@@ -37,10 +37,10 @@ export default function CreateModal({ open, handleClose, type }) {
                         </Typography>
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField onChange={(event) => setTitle(event.target.value)} label="Title" variant="outlined" />
+                        <TextField sx={{ width: '100%' }} onChange={(event) => setTitle(event.target.value)} label="Title" variant="outlined" />
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField onChange={(event) => setDescription(event.target.value)} label="Description" variant="outlined" />
+                        <TextField sx={{ width: '100%' }}  onChange={(event) => setDescription(event.target.value)} label="Description" variant="outlined" />
                     </Grid>
                     <Grid item container xs={12}>
                         <Stack direction="row" spacing={2}>

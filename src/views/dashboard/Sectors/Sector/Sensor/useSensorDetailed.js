@@ -1,10 +1,5 @@
-import { create } from 'zustand';
-
-export const Status = {
-    LOADING: "loading",
-    SUCCESS: "success",
-    FAILED: "failed",
-};
+import { create } from "zustand";
+import { Status } from "../useSensor";
 
 const useSensor = create((set) => ({
     average: -1,

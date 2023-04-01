@@ -8,6 +8,8 @@ import Loadable from 'ui-component/Loadable';
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
 const Locations = Loadable(lazy(() => import('views/dashboard/Locations')));
 const Sectors = Loadable(lazy(() => import('views/dashboard/Sectors')));
+const Sector = Loadable(lazy(() => import('views/dashboard/Sectors/Sector')));
+const Sensor = Loadable(lazy(() => import('views/dashboard/Sectors/Sector/Sensor')));
 
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
@@ -42,7 +44,15 @@ const MainRoutes = {
                 },
                 {
                     path: 'locations/:id',
-                    element: <Sectors />
+                    element: <Sectors />,
+                },
+                {
+                    path: 'locations/:id/sectors/:sectorId',
+                    element: <Sector />
+                },
+                {
+                    path: 'locations/:id/sectors/:sectorId/sensors/:sensorId',
+                    element: <Sensor />
                 }
             ]
         },

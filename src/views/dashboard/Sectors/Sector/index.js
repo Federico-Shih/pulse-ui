@@ -1,25 +1,48 @@
 import PropTypes from 'prop-types';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Typography from '@mui/material/Typography';
+import useSector from './useDetailedSector';
+import { useEffect } from 'react';
+import { Status } from './useSensor';
+import SensorCard from './SensorCard';
+import { useParams } from 'react-router';
+import { Stack, Typography } from '@mui/material';
+import CreateModal from 'ui-component/models/CreateModal';
+import AddIcon from '@mui/icons-material/Add';
+import { IconButton } from '@mui/material';
 
-const Sector = ({ title, description, sectorId }) => {
+const Sector = () => {
+    const params = useParams();
+    const sectorId = params.sectorId;
+    const { status, sensorList, fetch, title, description, open, closeModal, openModal } = useSector();
+    useEffect(() => {
+        fetch(sectorId);
+    }, []);
+
     return (
-        <Accordion>
-            <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-            >
-                <Typography>{title}</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-                <Typography>{description}</Typography>
-
-            </AccordionDetails>
-        </Accordion>
+        <>
+            {
+                status === Status.SUCCESS && (
+                    <Stack>
+                        <Stack direction={"row"} alignItems={"center"}>
+                            <Typography variant="h3">
+                                {title}
+                            </Typography>
+                            <IconButton onClick={openModal} sx={{ width: 50 }}>
+                                <AddIcon/>
+                            </IconButton>
+                        </Stack>
+                        <Typography variant="subtitle2">
+                            {description}
+                        </Typography>
+                        {
+                            sensorList.map((sensorId) => (
+                                <SensorCard key={sensorId} sensorId={sensorId} />
+                            ))
+                        }
+                    </Stack>
+                )
+            }
+            <CreateModal open={open} handleClose={closeModal} type="Sensor" />
+        </>
     );
 };
 
