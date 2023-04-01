@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-import { Modal, Box, Typography } from '@mui/material';
+import { Modal, Box, Typography, TextField, Grid, Button, Stack } from '@mui/material';
 
 const style = {
     position: 'absolute',
@@ -16,18 +16,40 @@ const style = {
   
 
 export default function CreateModal({ open, handleClose, type }) {
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+
+
+    const handleSave = () => {
+        console.log(description);
+    }
+
     return (
         <Modal
         open={open}
         onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h2" component="h2">
-            {type}
-          </Typography>
-        </Box>
-      </Modal>
+        >
+            <Box sx={style}>
+                <Grid container spacing={4}>
+                    <Grid item xs={12}>
+                        <Typography id="modal-modal-title" variant="h2" component="h2">
+                            {type}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField onChange={(event) => setTitle(event.target.value)} label="Title" variant="outlined" />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField onChange={(event) => setDescription(event.target.value)} label="Description" variant="outlined" />
+                    </Grid>
+                    <Grid item container xs={12}>
+                        <Stack direction="row" spacing={2}>
+                            <Button onClick={handleSave} variant="contained">Save</Button>
+                            <Button onClick={handleClose} variant="outlined">Cancel</Button>
+                        </Stack>
+                    </Grid>
+                </Grid>
+            </Box>
+        </Modal>
     )
 }

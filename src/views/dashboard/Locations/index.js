@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 // material-ui
-import { Grid, Typography, IconButton } from '@mui/material';
+import { Grid, Typography, IconButton, Stack } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
 // project imports
@@ -24,15 +24,15 @@ const Locations = () => {
     return (
         <Grid container spacing={gridSpacing}>
             <Grid item xs={12}>
-                <Grid container spacing={gridSpacing}>
-                    <Grid item lg={6} md={6} sm={6} xs={6} >
-                        <Typography variant="h1">Locations</Typography>
-                    </Grid>
-                    <Grid item lg={6} md={6} sm={6} xs={6}>
-                        <IconButton onClick={handleOpen}>
-                            <AddIcon/>
-                        </IconButton>
-                        <CreateModal open={open} handleClose={handleClose} type="Locations" />
+                <Grid item container spacing={gridSpacing}>
+                    <Grid item xs={12}>
+                        <Stack direction="row" spacing={2}>
+                            <Typography variant="h1">Locations</Typography>
+                            <IconButton onClick={handleOpen}>
+                                <AddIcon/>
+                            </IconButton>
+                            <CreateModal open={open} handleClose={handleClose} type="Locations" />
+                        </Stack>
                     </Grid>
                 </Grid>
             </Grid>
