@@ -16,16 +16,7 @@ import { Stack } from '@mui/system';
 
 // ==============================|| DEFAULT DASHBOARD ||============================== //
 
-const Dashboard = () => {
-    const [isLoading, setLoading] = useState(true);
-    useEffect(() => {
-        setLoading(false);
-    }, []);
-
-    return (
-        <Grid container spacing={gridSpacing}>
-            <Grid item xs={12}>
-                <Grid container spacing={gridSpacing}>
+/*
                     <Grid item lg={4} md={6} sm={6} xs={12}>
                         <EarningCard isLoading={isLoading} />
                     </Grid>
@@ -42,14 +33,46 @@ const Dashboard = () => {
                             </Grid>
                         </Grid>
                     </Grid>
+
+*/
+const Dashboard = () => {
+    const [isLoading, setLoading] = useState(true);
+    useEffect(() => {
+        setLoading(false);
+    }, []);
+
+    return (
+        <Grid container spacing={gridSpacing}>
+            <Grid item xs={12}>
+
+            </Grid>
+            <Grid item xs={12}>
+                <Grid container spacing={gridSpacing}>
+                    <Grid item xs={8}>
+                        <TotalConsumptionBarChart isLoading={isLoading} />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Grid container spacing={gridSpacing}>
+                            <Grid item xs={12}>
+                                <EarningCard isLoading={isLoading} />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TotalOrderLineChartCard isLoading={isLoading} />
+                            </Grid>
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Grid>
             <Grid item xs={12}>
-                <Stack direction="column">
-                    <TotalConsumptionBarChart isLoading={isLoading} />
-                    <RealTimeCard isLoading={isLoading} />
-                    <SectorPieChartCard sections={{ section1: 100, section2: 503, section5: 1235 }} />
-                </Stack>
+                <Grid container spacing={gridSpacing}>
+                    <Grid item xs={8}>
+                        <RealTimeCard isLoading={isLoading} />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <RealTimeCard isLoading={isLoading} />
+                    </Grid>
+                    {/* <SectorPieChartCard sections={{ section1: 100, section2: 503, section5: 1235 }} /> */}
+                </Grid>
             </Grid>
 
         </Grid>

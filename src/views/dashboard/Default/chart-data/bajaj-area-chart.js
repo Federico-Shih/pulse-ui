@@ -2,7 +2,7 @@
 
 const chartData = {
     type: 'area',
-    height: 95,
+    height: 250,
     options: {
         chart: {
             id: 'support-chart',

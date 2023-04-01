@@ -44,7 +44,7 @@ function LocationCard({ title, description, id }) {
                 ':hover': {
                     boxShadow: theme.shadows[16]
                 },
-                width: "25vh",
+                width: "30vh",
                 height: "20vh",
                 cursor: 'pointer',
             }}
@@ -86,33 +86,38 @@ const Locations = () => {
     return (
         <Grid container spacing={gridSpacing}>
             <Grid item xs={12}>
-                <Grid item container spacing={gridSpacing}>
+                <Grid item container spacing={1}>
                     <Grid item xs={12}>
-                        <Stack direction="row" spacing={2}>
-                            <Typography variant="h1">Locations</Typography>
+                        <Stack direction="row" spacing={2} alignItems={"center"}>
+                            <Typography variant="h2">Locations</Typography>
                             <IconButton onClick={handleOpen}>
                                 <AddIcon/>
                             </IconButton>
-                            <CreateModal 
-                                open={open} 
-                                handleClose={handleClose} 
-                                type="Locations" 
-                                onSubmit={async (locationDTO) => {
-                                    await create(locationDTO);
-                                    handleClose();
-                                }}
-                                />
                         </Stack>
                     </Grid>
-                    <Container>
-                        <Stack direction={"row"} flexWrap={"wrap"} sx={{ width: '100%' }} spacing={3} item container>
+                    <Grid item xs={12}>
+                        <Stack direction={"row"} flexWrap={"wrap"} sx={{ width: '100%' }} spacing={3}>
                             {locations.map((location) => (
-                                <LocationCard key={location.id} id={location.id} title={location.name} description={location.description} />
+                                <LocationCard 
+                                    key={location.id} 
+                                    id={location.id} 
+                                    title={location.name} 
+                                    description={location.description} 
+                                    />
                             ))}
                         </Stack>
-                    </Container>
+                    </Grid>
                 </Grid>
             </Grid>
+            <CreateModal 
+                open={open} 
+                handleClose={handleClose} 
+                type="Locations" 
+                onSubmit={async (locationDTO) => {
+                    await create(locationDTO);
+                    handleClose();
+                }}
+            />
         </Grid>
     );
 };

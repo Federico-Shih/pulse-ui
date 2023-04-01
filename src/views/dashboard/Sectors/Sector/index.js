@@ -29,18 +29,20 @@ const Sector = () => {
         <>
             {
                 status === Status.SUCCESS && (
-                    <Stack>
-                        <Stack direction={"row"} alignItems={"center"}>
-                            <Typography variant="h3">
-                                {sector.name}
+                    <Stack spacing={2}>
+                        <div>
+                            <Stack direction={"row"} alignItems={"center"}>
+                                <Typography variant="h3">
+                                    {sector.name}
+                                </Typography>
+                                <IconButton onClick={openModal} sx={{ width: 50, marginLeft: 3 }}>
+                                    <AddIcon/>
+                                </IconButton>
+                            </Stack>
+                            <Typography variant="subtitle2">
+                                {sector.description}
                             </Typography>
-                            <IconButton onClick={openModal} sx={{ width: 50, marginLeft: 3 }}>
-                                <AddIcon/>
-                            </IconButton>
-                        </Stack>
-                        <Typography variant="subtitle2">
-                            {sector.description}
-                        </Typography>
+                        </div>
                         <Stack sx={{ width: '100%' }} direction="row" flexWrap={"wrap"} spacing={1}>
                             {
                                 sensorList.map((sensor) => (

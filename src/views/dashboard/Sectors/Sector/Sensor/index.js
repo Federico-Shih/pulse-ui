@@ -37,7 +37,7 @@ const Sensor = () => {
                     </Typography>
                     <Button onClick={() => {
                         setOpen(true);
-                        navigator.clipboard.writeText(sensorId);
+                        navigator.clipboard.writeText(`http://${process.env.REACT_APP_API_URL}:${process.env.REACT_APP_API_PORT}/api/${process.env.REACT_APP_API_VERSION}/sensors/${sensorId}/update`);
                     }}>
                         <Typography sx={{ textTransform: "lowercase" }}>
                             id: {sensorId}

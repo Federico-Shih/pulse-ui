@@ -8,7 +8,7 @@ const DescriptionForm = ({ title, description }) => {
             <MuiTypography variant="h3">
                 {title}
             </MuiTypography>
-            <MuiTypography variant="subtitle1">
+            <MuiTypography variant="subtitle2">
                 {description}
             </MuiTypography>
         </Stack>

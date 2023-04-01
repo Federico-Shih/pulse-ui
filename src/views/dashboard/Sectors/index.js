@@ -4,7 +4,7 @@ import { useEffect, useMemo } from "react";
 import DescriptionForm from "./DescriptionForm";
 import { Status } from "./Sector/useSensor";
 import CreateModal from "ui-component/models/CreateModal";
-import { IconButton, Stack } from '@mui/material';
+import { Grid, IconButton, Stack } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import SectorCard from "./SectorCard";
 import { useLocations } from "../Locations/useLocations";
@@ -31,21 +31,25 @@ const Sectors = () => {
         <>
             {
                 store.status === Status.SUCCESS && (
-                    <>
-                        <Stack direction="row" spacing={5}>
-                            <DescriptionForm title={location.name} description={location.description} />
-                            <IconButton onClick={store.openModal} sx={{ width: 50 }}>
-                                <AddIcon/>
-                            </IconButton>
-                        </Stack>
-                        <Stack direction="row" width={"100%"} flexWrap="wrap">
-                            {
-                                store.sectorList.map((sector) => (
-                                    <SectorCard key={sector.id} sector={sector} />
-                                ))
-                            }
-                        </Stack>
-                    </>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <Stack direction="row" spacing={5}>
+                                <DescriptionForm title={location.name} description={location.description} />
+                                <IconButton onClick={store.openModal} sx={{ width: 50 }}>
+                                    <AddIcon/>
+                                </IconButton>
+                            </Stack>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Stack direction="row" width={"100%"} flexWrap="wrap">
+                                {
+                                    store.sectorList.map((sector) => (
+                                        <SectorCard key={sector.id} sector={sector} />
+                                    ))
+                                }
+                            </Stack>
+                        </Grid>
+                    </Grid>
                 )
             }
             <CreateModal 
