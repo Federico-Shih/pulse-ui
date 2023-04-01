@@ -1,8 +1,9 @@
 // assets
-import { IconDashboard } from '@tabler/icons';
+import { IconDashboard, IconHome } from '@tabler/icons';
+import HomeIcon from '@mui/icons-material/Home';
 
 // constant
-const icons = { IconDashboard };
+const icons = { IconDashboard, HomeIcon };
 
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
 
@@ -18,7 +19,15 @@ const dashboard = {
             url: '/dashboard/default',
             icon: icons.IconDashboard,
             breadcrumbs: false
-        }
+        },
+        {
+            id: 'locations',
+            title: 'Locations',
+            type: 'item',
+            url: '/dashboard/locations',
+            icon: icons.HomeIcon,
+            breadcrumbs: false
+        },
     ]
 };
 
