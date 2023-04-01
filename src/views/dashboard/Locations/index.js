@@ -8,26 +8,32 @@ import { useTheme } from '@mui/material/styles';
 // project imports
 import { gridSpacing } from 'store/constant';
 import CreateModal from 'ui-component/models/CreateModal.js';
+import { Container } from '@mui/system';
+import { useNavigate } from 'react-router';
 
 // ==============================|| DEFAULT DASHBOARD ||============================== //
 
 const MOCKED_LOCATIONS = [
     {
         title: "Kitchen",
-        description: "This is the kitchen"
+        description: "This is the kitchen",
+        id: 13
     },
     {
         title: "Living Room",
-        description: "This is the living room"
+        description: "This is the living room",
+        id: 14,
     },
     {
         title: "Bedroom",
-        description: "This is the bedroom"
+        description: "This is the bedroom",
+        id: 15
     },
 ]
 
-function LocationCard({ title, description }) {
+function LocationCard({ title, description, id }) {
     const theme = useTheme();
+    const navigate = useNavigate();
 
     return ( 
         <Card                 
@@ -38,7 +44,12 @@ function LocationCard({ title, description }) {
                 },
                 width: "25vh",
                 height: "20vh",
-        }}>
+                cursor: 'pointer',
+            }}
+            onClick={() => {
+                navigate(`${id}`);
+            }}
+        >
             <CardContent>
                 <Typography variant="h4" pb={1}>
                     {title}
@@ -75,13 +86,13 @@ const Locations = () => {
                             <CreateModal open={open} handleClose={handleClose} type="Locations" />
                         </Stack>
                     </Grid>
-                    <Grid item container xs={12} justifyContent="flex-start">
-                        {MOCKED_LOCATIONS.map((location) => (
-                            <Grid item xs={3}> 
+                    <Container>
+                        <Stack direction={"row"} flexWrap={"wrap"} sx={{ width: '100%' }} spacing={3} item container>
+                            {MOCKED_LOCATIONS.map((location) => (
                                 <LocationCard title={location.title} description={location.description} />
-                            </Grid>
-                        ))}
-                    </Grid>
+                            ))}
+                        </Stack>
+                    </Container>
                 </Grid>
             </Grid>
         </Grid>
