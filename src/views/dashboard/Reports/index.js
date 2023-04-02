@@ -1,61 +1,22 @@
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Stack, TableFooter, Collapse, IconButton } from "@mui/material";
-import { Box, Container } from "@mui/system";
-import { useState } from "react";
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Stack, TableFooter, Collapse, IconButton, LinearProgress } from "@mui/material";
+import { Box } from "@mui/system";
+import { useEffect, useState } from "react";
 import { KeyboardArrowUp, KeyboardArrowDown } from "@mui/icons-material";
+import { useReports } from "./useReports";
+import { HeartbeatType } from "services/heartbeat.service";
+import { Status } from "../Sectors/Sector/useSensor";
 
-const ServiceTypes = {
-    WATER: "water",
-    ELECTRICITY: "energy",
-    NATURALGAS: "gas",
-};
 
 const ServiceMeasure = {
-    [ServiceTypes.WATER]: 'lts',
-    [ServiceTypes.ELECTRICITY]: 'kW/h',
-    [ServiceTypes.NATURALGAS]: 'm3'
+    [HeartbeatType.Water]: 'lts',
+    [HeartbeatType.Electricity]: 'kW/h',
+    [HeartbeatType.Naturalgas]: 'm3'
 };
 
-const breakdown = {
-    [ServiceTypes.WATER]: {
-        location1: {
-            sector1: 100,
-            sector2: 200,
-            sector3: 500,
-            sector4: 200,
-        },
-        location2: {
-            sector3: 500,
-            sector4: 200,
-        }
-    },
-    [ServiceTypes.ELECTRICITY]: {
-        location1: {
-            sector1: 100,
-            sector2: 200,
-            sector3: 500,
-            sector4: 200,
-        },
-        location2: {
-            sector3: 500,
-            sector4: 200,
-        }
-    },
-    [ServiceTypes.NATURALGAS]: {
-        location1: {
-            sector1: 100,
-            sector2: 200,
-            sector3: 500,
-            sector4: 200,
-        },
-        location2: {
-            sector3: 500,
-            sector4: 200,
-        }
-    }
-}
 
 const CollapsibleRow = ({ mainRow, breakdownRows }) => {
     const [open, setOpen] = useState(false);
+    const { sectorMap, locationMap } = useReports();
     return (
         <>
         <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -69,14 +30,14 @@ const CollapsibleRow = ({ mainRow, breakdownRows }) => {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
-          {mainRow.location}
+          {locationMap[mainRow.location].name}
         </TableCell>
-        <TableCell>{mainRow.consumption}</TableCell>
+        <TableCell>{Math.round(mainRow.consumption)}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
+            <Box sx={{ margin: 1, marginLeft: 15 }}>
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
@@ -88,9 +49,9 @@ const CollapsibleRow = ({ mainRow, breakdownRows }) => {
                   {breakdownRows.map((breakdownRow, index) => (
                     <TableRow key={index}>
                       <TableCell component="th" scope="row">
-                        { breakdownRow.sector }
+                        { sectorMap[breakdownRow.sector].name }
                       </TableCell>
-                      <TableCell>{breakdownRow.consumption}</TableCell>
+                      <TableCell>{Math.round(breakdownRow.consumption)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -104,10 +65,18 @@ const CollapsibleRow = ({ mainRow, breakdownRows }) => {
 }
 
 const Reports = () => {
+    const reportsStore = useReports();
+    useEffect(() => {
+        reportsStore.fetch();
+    }, [reportsStore.fetch]);
+    
+    if (reportsStore.status === Status.LOADING) {
+        return <LinearProgress />;
+    }
     return (
         <Stack direction="column" spacing={5}>
             {
-                Object.entries(breakdown).map(([type, breakdownType]) => (
+                Object.entries(reportsStore.breakdown).map(([type, breakdownType]) => (
                 <div>
                     <Typography variant="h3" sx={{ textTransform: "capitalize", paddingBottom: 5 }}>
                         {type}
@@ -137,17 +106,6 @@ const Reports = () => {
                                     ))
                                 }
                             </TableBody>
-                            {/* <TableFooter>
-                                <TableRow>
-                                    <TableCell />
-                                    <TableCell>
-                                        total
-                                    </TableCell>
-                                    <TableCell>
-                                        {Object.values(breakdownType).map(Object.values).map(Object.values).reduce((prev, current) => prev + current, 0)}
-                                    </TableCell>
-                                </TableRow>
-                            </TableFooter> */}
                         </Table>
                     </TableContainer>
                 </div>

@@ -1,60 +1,42 @@
 import { useEffect, useState } from 'react';
 
 // material-ui
-import { Grid, Select, ToggleButton, ToggleButtonGroup, MenuItem, InputLabel, FormControl } from '@mui/material';
+import { Grid, Select, ToggleButton, ToggleButtonGroup, MenuItem, InputLabel, FormControl, CircularProgress } from '@mui/material';
 
 // project imports
 import EarningCard from './EarningCard';
 import RealTimeCard from './RealTimeCard';
 import AlertCard from './AlertCard';
 import TotalOrderLineChartCard from './TotalOrderLineChartCard';
-import TotalIncomeDarkCard from './TotalIncomeDarkCard';
-import TotalIncomeLightCard from './TotalIncomeLightCard';
 import TotalConsumptionBarChart from './TotalConsumptionBarChart';
 import { gridSpacing } from 'store/constant';
-import SectorPieChartCard from './SectorPieChartCard';
-import { Stack } from '@mui/system';
+import { useFilters, useOrganizationStore } from './store';
+import { HeartbeatType } from 'services/heartbeat.service';
 
-const MOCKED_LOCATIONS = [ "Location1", "Location2", "Location3" ]
-
-const MOCKED_SECTIONS = [ "Sections1", "Sections2", "Sections3", "Sections4", "Sections5", "Sections6", "Sections7", "Sections8" ]
-
-// ==============================|| DEFAULT DASHBOARD ||============================== //
-
-/*
-                    <Grid item lg={4} md={6} sm={6} xs={12}>
-                        <EarningCard isLoading={isLoading} />
-                    </Grid>
-                    <Grid item lg={4} md={6} sm={6} xs={12}>
-                        <TotalOrderLineChartCard isLoading={isLoading} />
-                    </Grid>
-                    <Grid item lg={4} md={12} sm={12} xs={12}>
-                        <Grid container spacing={gridSpacing}>
-                            <Grid item sm={6} xs={12} md={6} lg={12}>
-                                <TotalIncomeDarkCard isLoading={isLoading} />
-                            </Grid>
-                            <Grid item sm={6} xs={12} md={6} lg={12}>
-                                <TotalIncomeLightCard isLoading={isLoading} />
-                            </Grid>
-                        </Grid>
-                    </Grid>
-
-*/
 const Dashboard = () => {
-    const [typeOfEnergy, setTypeOfEnergy] = useState('WATER');
-    const [location, setLocation] = useState('');
-    const [section, setSection] = useState('');
+    const organizationStore = useOrganizationStore();
+    const [typeOfEnergy, setTypeOfEnergy] = useState(HeartbeatType.Electricity);
+    const filterStore = useFilters();
+
     const [isLoading, setLoading] = useState(true);
     useEffect(() => {
-        setLoading(false);
+        async function initialFetch() {
+            setLoading(true);
+            await organizationStore.fetch();
+            await filterStore.fetch();
+            setLoading(false);
+        }
+        initialFetch();
     }, []);
 
     const handleTypeOfEnergy = (
-        event: React.MouseEvent<HTMLElement>,
-        newTypeOfEnergy: string,
+        event,
+        newTypeOfEnergy,
       ) => {
         setTypeOfEnergy(newTypeOfEnergy);
       };
+    
+    if (isLoading) return <CircularProgress />
 
     return (
         <Grid container spacing={gridSpacing}>
@@ -65,28 +47,29 @@ const Dashboard = () => {
                         <Select
                             labelId="location-select"
                             id="location-select"
-                            value={location}
+                            value={filterStore.selectedLocation}
                             label="Location"
-                            onChange={(event) => setLocation(event.target.value)}
+                            onChange={(event) => filterStore.setLocation(event.target.value)}
                             sx={{ width: "30vh", marginRight: "1.5em"}}
                         >
-                            {MOCKED_LOCATIONS.map((location) => (
-                                <MenuItem value={location}>{location}</MenuItem>
+                            {filterStore.locations.map((location) => (
+                                <MenuItem key={location.id} value={location.id}>{location.name}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>
                     <FormControl>
                         <InputLabel id="location-select">Section</InputLabel>
                         <Select
+                            disabled={filterStore.selectedLocation.length === 0}
                             labelId="section-select"
                             id="section-select"
-                            value={section}
+                            value={filterStore.selectedSection}
                             label="Section"
-                            onChange={(event) => setSection(event.target.value)}
+                            onChange={(event) => filterStore.setSector(event.target.value)}
                             sx={{ width: "30vh",  marginRight: "1.5em"}}
                         >
-                            {MOCKED_SECTIONS.map((section) => (
-                                <MenuItem value={section}>{section}</MenuItem>
+                            {filterStore.sectors.map((section) => (
+                                <MenuItem value={section.id}>{section.name}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>
@@ -96,24 +79,29 @@ const Dashboard = () => {
                         exclusive
                         onChange={handleTypeOfEnergy}
                     >
-                        <ToggleButton value="water">WATER</ToggleButton>
-                        <ToggleButton value="electrecity">ELECTRICITY</ToggleButton>
-                        <ToggleButton value="gas">GAS</ToggleButton>
+                        <ToggleButton value={HeartbeatType.Water}>WATER</ToggleButton>
+                        <ToggleButton value={HeartbeatType.Electricity}>ELECTRICITY</ToggleButton>
+                        <ToggleButton value={HeartbeatType.Naturalgas}>GAS</ToggleButton>
                     </ToggleButtonGroup>
                 </Grid>
             </Grid>
             <Grid item xs={12}>
                 <Grid container spacing={gridSpacing}>
                     <Grid item xs={8}>
-                        <TotalConsumptionBarChart isLoading={isLoading} />
+                        <TotalConsumptionBarChart 
+                            isLoading={isLoading} 
+                            type={typeOfEnergy} 
+                            location={filterStore.selectedLocation}
+                            sector={filterStore.selectedSector}
+                            />
                     </Grid>
                     <Grid item xs={4}>
                         <Grid container spacing={gridSpacing}>
                             <Grid item xs={12}>
-                                <EarningCard isLoading={isLoading} />
+                                <EarningCard isLoading={isLoading} type={typeOfEnergy} />
                             </Grid>
                             <Grid item xs={12}>
-                                <TotalOrderLineChartCard isLoading={isLoading} />
+                                <TotalOrderLineChartCard isLoading={isLoading} type={typeOfEnergy} />
                             </Grid>
                         </Grid>
                     </Grid>
@@ -122,7 +110,12 @@ const Dashboard = () => {
             <Grid item xs={12}>
                 <Grid container spacing={gridSpacing}>
                     <Grid item xs={8}>
-                        <RealTimeCard isLoading={isLoading} />
+                        <RealTimeCard 
+                            isLoading={isLoading} 
+                            type={typeOfEnergy}                            
+                            locationId={filterStore.selectedLocation}
+                            sectorId={filterStore.selectedSector} 
+                            />
                     </Grid>
                     <Grid item xs={4}>
                         <AlertCard isLoading={isLoading} />

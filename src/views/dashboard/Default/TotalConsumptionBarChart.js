@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 // material-ui
@@ -17,6 +17,8 @@ import { gridSpacing } from 'store/constant';
 
 // chart data
 import chartData from './chart-data/total-growth-bar-chart';
+import { useMonthConsume, useOrganizationStore } from './store';
+import ReactApexChart from 'react-apexcharts';
 
 const status = [
     {
@@ -43,11 +45,11 @@ const MOCKED_CONSUMPTIONS = {
 
 // ==============================|| DASHBOARD DEFAULT - TOTAL GROWTH BAR CHART ||============================== //
 
-const TotalConsumptionBarChart = ({ isLoading }) => {
-    const [value, setValue] = useState('today');
+const TotalConsumptionBarChart = ({ isLoading, type, location, sector }) => {
+    const { organization, fetch } = useOrganizationStore();
+    const mCS = useMonthConsume();
     const theme = useTheme();
     const customization = useSelector((state) => state.customization);
-
     const { navType } = customization;
     const { primary } = theme.palette.text;
     const darkLight = theme.palette.dark.light;
@@ -58,44 +60,44 @@ const TotalConsumptionBarChart = ({ isLoading }) => {
     const primaryDark = theme.palette.primary.dark;
     const secondaryMain = theme.palette.secondary.main;
     const secondaryLight = theme.palette.secondary.light;
-
     useEffect(() => {
-        const newChartData = {
-            ...chartData.options,
-            colors: [secondaryMain],
-            xaxis: {
-                labels: {
-                    style: {
-                        colors: [primary, primary, primary, primary, primary, primary, primary, primary, primary, primary, primary, primary]
-                    }
-                }
-            },
-            yaxis: {
-                labels: {
-                    style: {
-                        colors: [primary]
-                    }
-                }
-            },
-            grid: {
-                borderColor: grey200
-            },
-            tooltip: {
-                theme: 'light'
-            },
-            legend: {
-                labels: {
-                    colors: grey500
+        if (organization) {
+            mCS.fetch(type, organization.id, location, sector)
+        } else {
+            fetch();
+        }
+    }, [fetch, location, mCS.fetch, organization, sector, type]);
+
+    const newChartData = {
+        colors: [secondaryMain],
+        xaxis: {
+            labels: {
+                style: {
+                    colors: [primary, primary, primary, primary, primary, primary, primary, primary, primary, primary, primary, primary]
                 }
             }
-        };
-
-        // do not load chart when loading
-        if (!isLoading) {
-            ApexCharts.exec(`bar-chart`, 'updateOptions', newChartData);
-        }
-    }, [navType, primary200, primaryDark, secondaryMain, secondaryLight, primary, darkLight, grey200, isLoading, grey500]);
-
+        },
+        yaxis: {
+            labels: {
+                style: {
+                    colors: [primary]
+                }
+            },
+            decimalsInFloat: 2
+        },
+        grid: {
+            borderColor: grey200
+        },
+        tooltip: {
+            theme: 'light'
+        },
+        legend: {
+            labels: {
+                colors: grey500
+            }
+        },
+        ...chartData.options,
+    };
     return (
         <>
             {isLoading ? (
@@ -104,21 +106,12 @@ const TotalConsumptionBarChart = ({ isLoading }) => {
                 <MainCard>
                     <Grid container spacing={gridSpacing}>
                         <Grid item xs={12}>
-                            <Grid container alignItems="center" justifyContent="space-between">
-                                <Grid item>
-                                    <Grid container direction="column" spacing={1}>
-                                        <Grid item>
-                                            <Typography variant="subtitle2">Total Consumption</Typography>
-                                        </Grid>
-                                        <Grid item>
-                                            <Typography variant="h3">{MOCKED_CONSUMPTIONS.total} kWh</Typography>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Chart {...chartData} />
+                            <ReactApexChart 
+                                options={newChartData}
+                                series={[{data: mCS.values, name: 'Consumption' }]}
+                                type="bar"
+                                height={350}
+                            />
                         </Grid>
                     </Grid>
                 </MainCard>
@@ -128,7 +121,10 @@ const TotalConsumptionBarChart = ({ isLoading }) => {
 };
 
 TotalConsumptionBarChart.propTypes = {
-    isLoading: PropTypes.bool
+    isLoading: PropTypes.bool,
+    type: PropTypes.string.isRequired,
+    location: PropTypes.string.isRequired,
+    sector: PropTypes.string.isRequired,
 };
 
 export default TotalConsumptionBarChart;

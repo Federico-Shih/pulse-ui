@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // material-ui
 import { useTheme, styled } from '@mui/material/styles';
-import { Avatar, Box, Button, Grid, Typography } from '@mui/material';
+import { Avatar, Box, Button, CircularProgress, Grid, Typography } from '@mui/material';
 
 // third-party
 import Chart from 'react-apexcharts';
@@ -18,6 +18,8 @@ import ChartDataYear from './chart-data/total-order-year-line-chart';
 // assets
 import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import { useOrganizationStore, usePercentageConsumptionStore } from './store';
+import { Status } from '../Sectors/Sector/useSensor';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
     backgroundColor: theme.palette.primary.dark,
@@ -61,16 +63,25 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
     }
 }));
 
+function symbol(number) {
+    return number >= 0 ? '+' : '-';
+}
+
 // ==============================|| DASHBOARD - TOTAL ORDER LINE CHART CARD ||============================== //
 
-const TotalOrderLineChartCard = ({ isLoading }) => {
+const TotalOrderLineChartCard = ({ isLoading, type }) => {
     const theme = useTheme();
+    const { organization, fetch } = useOrganizationStore();
+    const { fetch: fetchPerc, percentageConsumption, status } = usePercentageConsumptionStore();
 
-    const [timeValue, setTimeValue] = useState(false);
-    const handleChangeTime = (event, newValue) => {
-        setTimeValue(newValue);
-    };
-
+    const [timeValue, setTimeValue] = useState(true);
+    useEffect(() => {
+        if (organization) {
+            fetchPerc(organization.id, type);
+        } else {
+            fetch();
+        }
+    }, [fetch, fetchPerc, organization, type]);
     return (
         <>
             {isLoading ? (
@@ -95,26 +106,6 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
                                             <LocalMallOutlinedIcon fontSize="inherit" />
                                         </Avatar>
                                     </Grid>
-                                    <Grid item>
-                                        <Button
-                                            disableElevation
-                                            variant={timeValue ? 'contained' : 'text'}
-                                            size="small"
-                                            sx={{ color: 'inherit' }}
-                                            onClick={(e) => handleChangeTime(e, true)}
-                                        >
-                                            Month
-                                        </Button>
-                                        <Button
-                                            disableElevation
-                                            variant={!timeValue ? 'contained' : 'text'}
-                                            size="small"
-                                            sx={{ color: 'inherit' }}
-                                            onClick={(e) => handleChangeTime(e, false)}
-                                        >
-                                            Year
-                                        </Button>
-                                    </Grid>
                                 </Grid>
                             </Grid>
                             <Grid item sx={{ mb: 0.75 }}>
@@ -122,15 +113,15 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
                                     <Grid item xs={6}>
                                         <Grid container alignItems="center">
                                             <Grid item>
-                                                {timeValue ? (
-                                                    <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>
-                                                        + 12%
-                                                    </Typography>
-                                                ) : (
-                                                    <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>
-                                                        + 2.7%
-                                                    </Typography>
-                                                )}
+                                                    {
+                                                        status === Status.LOADING ? (
+                                                            <CircularProgress />
+                                                        ) : (
+                                                            <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>
+                                                                {symbol(percentageConsumption)} {Math.round(percentageConsumption * 100)}%
+                                                            </Typography>
+                                                        )
+                                                    }
                                             </Grid>
                                             <Grid item>
                                                 <Avatar

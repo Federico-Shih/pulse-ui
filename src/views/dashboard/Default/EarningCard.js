@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // material-ui
 import { styled, useTheme } from '@mui/material/styles';
-import { Avatar, Box, Grid, Menu, MenuItem, Typography } from '@mui/material';
+import { Avatar, Box, CircularProgress, Grid, Menu, MenuItem, Typography } from '@mui/material';
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
@@ -17,6 +17,9 @@ import GetAppTwoToneIcon from '@mui/icons-material/GetAppOutlined';
 import FileCopyTwoToneIcon from '@mui/icons-material/FileCopyOutlined';
 import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfOutlined';
 import ArchiveTwoToneIcon from '@mui/icons-material/ArchiveOutlined';
+import { useOrganizationStore, useTotalConsumptionStore } from './store';
+import { mapperMeasure } from './helpers';
+import { Status } from '../Sectors/Sector/useSensor';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
     backgroundColor: theme.palette.secondary.dark,
@@ -56,7 +59,9 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 
 // ===========================|| DASHBOARD DEFAULT - EARNING CARD ||=========================== //
 
-const EarningCard = ({ isLoading }) => {
+const EarningCard = ({ isLoading, type }) => {
+    const { organization, fetch: fetchOrg } = useOrganizationStore();
+    const consumptionStore = useTotalConsumptionStore();
     const theme = useTheme();
 
     const [anchorEl, setAnchorEl] = useState(null);
@@ -68,6 +73,13 @@ const EarningCard = ({ isLoading }) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+    useEffect(() => {
+        if (organization) {
+            consumptionStore.fetch(organization.id, type);
+        } else {
+            fetchOrg();
+        }
+    }, [consumptionStore.fetch, fetchOrg, organization, type]);
 
     return (
         <>
@@ -143,9 +155,15 @@ const EarningCard = ({ isLoading }) => {
                             <Grid item>
                                 <Grid container alignItems="center">
                                     <Grid item>
-                                        <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>
-                                            570 kWh
-                                        </Typography>
+                                        {
+                                            consumptionStore.status === Status.LOADING ? (
+                                                <CircularProgress />) : (
+                                                    <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>
+                                                        {Math.round(consumptionStore.totalConsumption)}
+                                                        <span style={{ fontSize: '1.5rem'}}>{mapperMeasure[type]}</span>
+                                                    </Typography>
+                                                )
+                                        }
                                     </Grid>
                                     <Grid item>
                                         <Avatar

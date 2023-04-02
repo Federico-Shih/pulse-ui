@@ -1,5 +1,9 @@
 import axios from './axios.config';
 
+const getOrganization = async () => {
+    const organizationsResponse = await axios.get(`/organizations/all`);
+    return organizationsResponse.data[0];
+}
 
 const getLocations = async () => {
     const organizationsResponse = await axios.get(`/organizations/all`);
@@ -19,4 +23,4 @@ const createLocation = async ({ title, description }) => {
     return response.data;
 }
 
-export { getLocations, createLocation };
+export { getLocations, createLocation, getOrganization };
