@@ -28,6 +28,7 @@ const chartData = {
         ],
         plotOptions: {
             bar: {
+                borderRadius: 4, // set the border radius of the bars
                 horizontal: false,
                 columnWidth: '50%'
             }

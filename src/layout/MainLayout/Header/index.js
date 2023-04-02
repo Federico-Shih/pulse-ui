@@ -39,7 +39,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ flexGrow: 1 }} />
             <ButtonBase sx={{ borderRadius: '12px', overflow: 'hidden' }}>
-                <Avatar
+                {/* <Avatar
                     variant="rounded"
                     sx={{
                         ...theme.typography.commonAvatar,
@@ -56,7 +56,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
                     color="inherit"
                 >
                     <IconMenu2 stroke={1.5} size="1.3rem" />
-                </Avatar>
+                </Avatar> */}
             </ButtonBase>
             {/* notification & profile */}
             {/* <NotificationSection />
