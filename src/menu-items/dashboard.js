@@ -2,10 +2,10 @@
 import { IconDashboard, IconHome } from '@tabler/icons';
 import HomeIcon from '@mui/icons-material/Home';
 import { Assessment } from '@mui/icons-material';
-
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 
 // constant
-const icons = { IconDashboard, HomeIcon, Assessment };
+const icons = { IconDashboard, HomeIcon, Assessment, LightbulbIcon };
 
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
 
@@ -36,7 +36,14 @@ const dashboard = {
             type: 'item',
             url: '/dashboard/reports',
             icon: icons.Assessment,
-        }
+        },
+        {
+            id: 'alerts',
+            title: 'Alerts',
+            type: 'item',
+            url: '/dashboard/alerts',
+            icon: icons.LightbulbIcon,
+        },
     ]
 };
 
