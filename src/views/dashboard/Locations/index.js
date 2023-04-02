@@ -47,6 +47,7 @@ function LocationCard({ title, description, id }) {
                 width: "100",
                 height: "20vh",
                 cursor: 'pointer',
+                paddingBottom: 2,
             }}
             onClick={() => {
                 navigate(`${id}`);

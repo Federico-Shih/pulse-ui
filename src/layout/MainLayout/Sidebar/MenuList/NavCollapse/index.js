@@ -121,8 +121,7 @@ const NavCollapse = ({ menu, level }) => {
                     <IconChevronDown stroke={1.5} size="1rem" style={{ marginTop: 'auto', marginBottom: 'auto' }} />
                 )}
             </ListItemButton>
-            <Collapse in={open} timeout="auto" unmountOnExit>
-                <List
+            <List
                     component="div"
                     disablePadding
                     sx={{
@@ -141,7 +140,6 @@ const NavCollapse = ({ menu, level }) => {
                 >
                     {menus}
                 </List>
-            </Collapse>
         </>
     );
 };

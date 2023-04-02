@@ -70,13 +70,6 @@ const TotalConsumptionBarChart = ({ isLoading, type, location, sector }) => {
 
     const newChartData = {
         colors: [secondaryMain],
-        xaxis: {
-            labels: {
-                style: {
-                    colors: [primary, primary, primary, primary, primary, primary, primary, primary, primary, primary, primary, primary]
-                }
-            }
-        },
         yaxis: {
             labels: {
                 style: {
@@ -97,6 +90,15 @@ const TotalConsumptionBarChart = ({ isLoading, type, location, sector }) => {
             }
         },
         ...chartData.options,
+        xaxis: {
+            labels: {
+                style: {
+                    colors: [primary, primary, primary, primary, primary, primary, primary, primary, primary, primary, primary, primary]
+                }
+            },
+            type: 'category',
+            categories: mCS.months
+        },
     };
     return (
         <>

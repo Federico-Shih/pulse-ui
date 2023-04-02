@@ -83,15 +83,21 @@ export const useFilters = create((set) => ({
     setSector: (sectorId) => set({ selectedSector: sectorId }),
 }));
 
+const monthsTags = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ];
+
 export const useMonthConsume = create((set) => ({
     values: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     status: Status.LOADING,
     fetch: async (type, organizationId, locationId, sectorId) => {
         set({ status: Status.LOADING });
         const today = new Date();
-        const year = today.getFullYear();
-        const firstDayOfYear = new Date(year, 0, 1);
-        const lastDayOfYear = new Date(year, 11, 31);
+        const lastYear = today.getFullYear() - 1; // subtract one year from today's year
+        const oneYearAgo = new Date(lastYear, today.getMonth(), today.getDate()); // create a new date object with the new year value
+        const lastDayOfYear = new Date();
         
         let scope = AggregationScope.Sector;
         let id = sectorId;
@@ -108,14 +114,18 @@ export const useMonthConsume = create((set) => ({
             id, 
             scope, 
             type,  
-            startTime: firstDayOfYear.getTime() + 1,
+            startTime: oneYearAgo.getTime() + 1,
             endTime: lastDayOfYear.getTime(),
             interval: 60 * 60 * 24 * 30
         });
-        set(({ values }) => {
-            heartResponse.filter(({ timestamp }) => (new Date(timestamp * 1000).getFullYear() === new Date().getFullYear())).forEach(({ value, timestamp }) => {
-                values[new Date(timestamp * 1000).getMonth()] = value;
-            });
+        set(({ values, months }) => {
+            for (let i = values.length - 1; i >= 0; i -= 1) {
+                values[i] = heartResponse[i].value;
+                const date = new Date(heartResponse[i].timestamp * 1000); // convert to milliseconds
+                const month = monthsTags[date.getMonth()];
+                const year = date.getFullYear();
+                months[i] = `${month}-${year}`;
+            }
             return { values, status: Status.SUCCESS };
         }); 
     }

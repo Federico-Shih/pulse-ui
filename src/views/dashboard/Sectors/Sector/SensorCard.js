@@ -19,8 +19,8 @@ const SensorCard = ({ sensor }) => {
                 <Typography variant="subtitle2">
                     {sensor.description}
                 </Typography>
-                <Box sx={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
-                    <Typography sx={{ marginTop: "auto" }}>
+                <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+                    <Typography sx={{ marginTop: "auto", alignSelf: "flex-end" }}>
                         Id: {sensor.id}
                     </Typography>
                 </Box>
