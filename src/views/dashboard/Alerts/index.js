@@ -6,8 +6,8 @@ import ReactApexChart from 'react-apexcharts';
 
 const MOCKED_ALERTS = [
     {
-        title: "Kitchen",
-        description: "This is the kitchen",
+        title: "Sensor1",
+        description: "Description of sensor1",
         downtime: 1000,
         series: [{
             name: 'Consumption',
@@ -15,22 +15,22 @@ const MOCKED_ALERTS = [
         }]
     },
     {
-        title: "Living Room",
-        description: "This is the living room", 
+        title: "Sensor2",
+        description: "Description of sensor2", 
         downtime: 300,
         series: [{
             name: 'Consumption',
-            data: [0, 2, 4, 6, 8, 10, 12, 14, 16],
+            data: [95, 39, 14, 27, 57, 67, 23, 63, 73],
         }]
 
     },
     {
-        title: "Bedroom",
-        description: "This is the bedroom",
+        title: "Sensor3",
+        description: "Description of sensor3",
         downtime: 200,
         series: [{
             name: 'Consumption',
-            data: [1, 3, 5, 7, 9, 11, 13, 15, 17], 
+            data: [81, 63, 51, 72, 10, 47, 80, 16, 91], 
         }]
     },
 ]
@@ -42,6 +42,7 @@ const CollapsibleRow = ({ title, description, downtime, series }) => {
     const options = {
         chart: {
             height: 350,
+            width: 1700,
             type: 'line',
             zoom: {
             enabled: false
@@ -54,7 +55,7 @@ const CollapsibleRow = ({ title, description, downtime, series }) => {
             curve: 'straight'
         },
         title: {
-            text: 'Consumption by sensor',
+            text: `Sensor Consumption`,
             align: 'left'
         },
         grid: {
@@ -94,7 +95,7 @@ const CollapsibleRow = ({ title, description, downtime, series }) => {
                 </Typography>
             </Grid>
             <Collapse in={open} timeout="auto" unmountOnExit>
-                <Grid mt={6} ml={4}>
+                <Grid mt={6} ml={4} style={{ width: "600px" }}>
                     <ReactApexChart options={options} series={series} type="line" height={350} />
                 </Grid>           
             </Collapse>
