@@ -1,14 +1,18 @@
 import axios from './axios.config';
 
-const ORGANIZATION_ID = process.env.REACT_APP_ORGANIZATIONID;
 
 const getLocations = async () => {
-    const response = await axios.get(`/organizations/${ORGANIZATION_ID}/locations/all`);
-    return response.data;
+    const organizationsResponse = await axios.get(`/organizations/all`);
+    if (organizationsResponse.data.length !== 0) {
+        const response = await axios.get(`/organizations/${organizationsResponse.data[0].id}/locations/all`);
+        return response.data;
+    }
+    return [];
 };
 
 const createLocation = async ({ title, description }) => {
-    const response = await axios.post(`/organizations/${ORGANIZATION_ID}/locations/create`, {
+    const organizationsResponse = await axios.get(`/organizations/all`);
+    const response = await axios.post(`/organizations/${organizationsResponse.data[0].id}/locations/create`, {
         name: title,
         description
     });
