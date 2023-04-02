@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { Status } from './useSensor';
 import SensorCard from './SensorCard';
 import { useParams } from 'react-router';
-import { Stack, Typography } from '@mui/material';
+import { Grid, Stack, Typography } from '@mui/material';
 import CreateModal from 'ui-component/models/CreateModal';
 import AddIcon from '@mui/icons-material/Add';
 import { IconButton } from '@mui/material';
@@ -43,13 +43,15 @@ const Sector = () => {
                                 {sector.description}
                             </Typography>
                         </div>
-                        <Stack sx={{ width: '100%' }} direction="row" flexWrap={"wrap"} spacing={1}>
+                        <Grid container sx={{ width: '100%' }} spacing={1}>
                             {
                                 sensorList.map((sensor) => (
-                                    <SensorCard key={sensor.id} sensor={sensor} />
+                                    <Grid item key={sensor.id} xs={3}>
+                                        <SensorCard sensor={sensor} />
+                                    </Grid>
                                 ))
                             }
-                        </Stack>
+                        </Grid>
                     </Stack>
                 )
             }

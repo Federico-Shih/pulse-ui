@@ -41,13 +41,15 @@ const Sectors = () => {
                             </Stack>
                         </Grid>
                         <Grid item xs={12}>
-                            <Stack direction="row" width={"100%"} flexWrap="wrap">
+                            <Grid container direction="row" width={"100%"} flexWrap="wrap" spacing={2}>
                                 {
                                     store.sectorList.map((sector) => (
-                                        <SectorCard key={sector.id} sector={sector} />
+                                        <Grid item key={sector.id} xs={3}>
+                                            <SectorCard  sector={sector} />
+                                        </Grid>
                                     ))
                                 }
-                            </Stack>
+                            </Grid>
                         </Grid>
                     </Grid>
                 )

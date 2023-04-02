@@ -44,7 +44,7 @@ function LocationCard({ title, description, id }) {
                 ':hover': {
                     boxShadow: theme.shadows[16]
                 },
-                width: "30vh",
+                width: "100",
                 height: "20vh",
                 cursor: 'pointer',
             }}
@@ -56,7 +56,7 @@ function LocationCard({ title, description, id }) {
                 <Typography variant="h4" pb={1}>
                     {title}
                 </Typography>
-                <Typography >
+                <Typography sx={{ textOverflow: "ellipsis", overflow: "hidden" }}>
                     {description}
                 </Typography>    
             </CardContent>
@@ -96,16 +96,21 @@ const Locations = () => {
                         </Stack>
                     </Grid>
                     <Grid item xs={12}>
-                        <Stack direction={"row"} flexWrap={"wrap"} sx={{ width: '100%' }} spacing={3}>
+                        <Grid container spacing={2}>
                             {locations.map((location) => (
-                                <LocationCard 
+                                <Grid  
                                     key={location.id} 
-                                    id={location.id} 
-                                    title={location.name} 
-                                    description={location.description} 
+                                    item
+                                    xs={2}
+                                >
+                                    <LocationCard 
+                                        id={location.id} 
+                                        title={location.name} 
+                                        description={location.description} 
                                     />
+                                </Grid>
                             ))}
-                        </Stack>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>

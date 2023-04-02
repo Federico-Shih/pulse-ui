@@ -3,12 +3,13 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { useNavigate } from "react-router";
+import { Box, Stack } from "@mui/system";
 
 
 const SensorCard = ({ sensor }) => {
     const navigate = useNavigate();
     return (
-        <Card variant="outlined" sx={{ width: "15em", cursor: "pointer" }} onClick={() => {
+        <Card variant="outlined" sx={{ width: "18em", cursor: "pointer", height: "100%" }} onClick={() => {
             navigate(`sensors/${sensor.id}`);
         }}>
             <CardContent>
@@ -18,11 +19,12 @@ const SensorCard = ({ sensor }) => {
                 <Typography variant="subtitle2">
                     {sensor.description}
                 </Typography>
-                <Typography>
-                    Id: {sensor.id}
-                </Typography>
+                <Box sx={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
+                    <Typography sx={{ marginTop: "auto" }}>
+                        Id: {sensor.id}
+                    </Typography>
+                </Box>
             </CardContent>
-
         </Card>
     );
 };

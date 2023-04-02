@@ -6,7 +6,7 @@ const SectorCard = ({ sector }) => {
     const navigate = useNavigate();
 
     return (
-        <Card sx={{ cursor: "pointer" }}  onClick={() => {
+        <Card sx={{ cursor: "pointer", height: "100%" }}  onClick={() => {
             navigate(`sectors/${sector.id}`)
         }}>
             <CardContent>
