@@ -1,6 +1,7 @@
 // material-ui
 import { Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import logo from 'assets/images/logo.png'
 
 /**
  * if you want to use image instead of <svg> uncomment following.
@@ -22,9 +23,12 @@ const Logo = () => {
          * <img src={logo} alt="Berry" width="100" />
          *
          */
-        <Typography variant="h2">
-            Pulse
-        </Typography>
+        <>
+            <img src={logo} alt="Pulse logo" width="30" />
+            <Typography variant="h2" ml={1}>
+                Pulse
+            </Typography>
+        </>
     );
 };
 
