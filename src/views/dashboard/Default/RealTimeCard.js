@@ -38,7 +38,7 @@ const RealTimeCard = () => {
                 <Grid item xs={12}>
                     <Grid container alignItems="center" justifyContent="space-between">
                         <Grid item>
-                            <Typography variant="subtitle1" sx={{ color: theme.palette.secondary.dark }}>
+                            <Typography variant="h4" sx={{ color: theme.palette.secondary.dark }}>
                                 Real Time Consumption
                             </Typography>
                         </Grid>
